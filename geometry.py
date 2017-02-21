@@ -198,54 +198,73 @@ class RegularPentagon(Shape):
 
 class ShapeList:
 
+    """
+    This is a class representing list of shapes.
+    """
 
     def __init__(self):
         self.shapes = []
 
     def add_shape(self, shape):
-
-        if not isinstance(shape, Shape):
-            raise TypeError("Error")
-        else:
+        if isinstance(shape, Shape):
             self.shapes.append(shape)
+        else:
+            raise TypeError
 
+    def get_shapes_table(self):
+        title_list = ["idx", "Class", "__str__", "Perimeter", "Formula", "Area", "Formula"]
+        table = []
+        for obj in self.shapes:
+            line_lst = [str(self.shapes.index(obj)), obj.__class__.__name__, str(obj), str(obj.get_perimeter()), str(
+                obj.get_perimeter_formula()), str(obj.get_area()), str(obj.get_area_formula())]
+            table.append(line_lst)
+        table.insert(0, title_list)
+        width_list = []
+        for i in range(len(table[0])):
+            longest_string = 0
+            for row in table:
+                if len(row[i]) > longest_string:
+                    longest_string = len(row[i])
+            width_list.append(longest_string)
+
+        print("╔", end="")
+        for column in range(len(table[0])):
+            print("{0:═^{w}}".format("═", w=width_list[column] + 2), end="")
+            if column + 1 != len(table[0]):
+                print("╦", end="")
+        print("╗\n", end="")
+        '''content'''
+        for row_number, row in enumerate(table):
+            for column, cell in enumerate(row):
+                print("║{0:^{w}}".format(cell, w=width_list[column] + 2), end="")
+            print("║\n", end="")
+            if row_number + 1 != len(table):
+                print("╠", end="")
+                for column, cell in enumerate(row):
+                    print("{0:═^{w}}".format("═", w=width_list[column] + 2), end="")
+                    if column + 1 != len(table[0]):
+                        print("╬", end="")
+                print("╣\n", end="")
+            '''footer'''
+            if row_number + 1 == len(table):
+                print("╚", end="")
+                for column, cell in enumerate(row):
+                    print("{0:═^{w}}".format("═", w=width_list[column] + 2), end="")
+                    if column + 1 != len(table[0]):
+                        print("╩", end="")
+                print("╝")
+        table.remove(table[0])
 
     def get_largest_shape_by_perimeter(self):
-
-        if len(self.shapes) > 0:
-            largest_shape = self.shapes[0] #
-            for shape in self.shapes:
-                if shape.get_perimeter() > largest_shape.get_perimeter():
-                    largest_shape = shape
-            return largest_shape
-        else:
-            return "You have no shapes added"
-
-
+        largest_obj = Square(0)
+        for obj in self.shapes:
+            if largest_obj.get_perimeter() < obj.get_perimeter():
+                largest_obj = obj
+        return largest_obj
 
     def get_largest_shape_by_area(self):
-
-        if len(self.shapes) > 0:
-            largest_shape = self.shapes[0]
-            for shape in self.shapes:
-                if shape.get_area() > largest_shape.get_area():
-                    largest_shape = shape
-            return largest_shape
-        else:
-            return "You have no shapes added"
-
-    def get_shapes_table(self):
-        table = []
-        title_list = ['idx', 'Class', '__str__ ', 'Perimeter', 'Formula', 'Area', 'Formula']
-        for i in range(0, len(self.shapes)):
-            table.append([str(i), str(self.shapes[i].__class__.__name__), str(self.shapes[i]),
-                          str(round(self.shapes[i].get_perimeter(), 2)), str(self.shapes[i].get_perimeter_formula()),
-                          str(round(self.shapes[i].get_area(), 2)), str(self.shapes[i].get_area_formula())])
-    def get_shapes_table(self):
-        table = []
-        title_list = ['idx', 'Class', '__str__ ', 'Perimeter', 'Formula', 'Area', 'Formula']
-        for i in range(0, len(self.shapes)):
-            table.append([str(i), str(self.shapes[i].__class__.__name__), str(self.shapes[i]),
-                          str(round(self.shapes[i].get_perimeter(), 2)), str(self.shapes[i].get_perimeter_formula()),
-                          str(round(self.shapes[i].get_area(), 2)), str(self.shapes[i].get_area_formula())])
-        return str(ui.print_table(table, title_list))  # table implemented in ui module
+        largest_obj = Square(0)
+        for obj in self.shapes:
+            if largest_obj.get_area() < obj.get_area():
+                largest_obj = obj
+        return largest_obj
